@@ -1,2 +1,2 @@
-# reon-lk
-## REON.lk The Vehicle Rental Service In Srilanka
+# REON
+## reon.lk The Vehicle Rental Service In Srilanka
