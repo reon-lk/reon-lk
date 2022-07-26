@@ -18,6 +18,21 @@ const userVerify = async (jwtToken, next) => {
     }
 };
 
+const adminVerify = async (jwtToken, next) => {
+    const valid = await tokenValidator(jwtToken);
+    if(!valid){
+        return("Access Denied!");
+    }else{
+        const existingUser = await userSchema.userModel.findOne({email:valid.email});
+        if (existingUser.role == 0){
+            return("You are a user!!"); // redirect to admin portal (/admin)
+        }else{
+            return(existingUser)
+            next();
+        }
+    }
+};
+
 const checkPage = async (jwtToken) => {
     const existingUser = await this.userVerify(jwtToken);
 

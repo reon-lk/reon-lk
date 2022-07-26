@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 //schema for page
 const pageSchema = {
-    pId:Number,
+    pId:{
+        type:Number,
+        unique:true
+    },
     uId:{
         type:Number,
         unique:true

@@ -126,7 +126,7 @@ exports.logout = (req, res) => {
     // res.redirect('/');
 };
 
-
+// check myPage Status http request
 exports.myPage = async (req, res) => {
     try{
         const jwtToken = req.cookies.jwt;
@@ -142,6 +142,7 @@ exports.myPage = async (req, res) => {
     }
 };
 
+// create myPage http request
 exports.createMyPage = async(req, res) => {
     try{
         const utcTimestamp = new Date().getTime();
@@ -161,7 +162,7 @@ exports.createMyPage = async(req, res) => {
                 uId:userValid.uId,
                 pageName:req.body.pageName,
                 phone:req.body.phone,
-                link:"new Link 1",
+                link:"new Link 4",
                 statuses:"0",
                 statusComment:"User Create",
                 createDate:utcTimestamp,
