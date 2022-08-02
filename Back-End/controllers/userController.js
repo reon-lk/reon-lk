@@ -179,3 +179,74 @@ exports.createMyPage = async(req, res) => {
         res.send(error);
     }
 };
+
+//add vehicle
+
+exports.addVehicle = async(req, res) => {
+    try {
+        const utcTimestamp = new Date().getTime();
+        const jwtToken = req.cookies.jwt;
+        const userValid = await userVerify.userVerify(jwtToken);
+        const page = await pageSchema.pageModel.findOne({uId: userValid.uId})
+            if(!page) {
+                res.send("page not found")
+            }else{
+                userSchema.userCounterModel.findOneAndUpdate( { countername: "vehiclecounter" }, { $inc: { seq: 1 } }, { new: true }, (err, cd) => {
+                    let seqId;
+                    if (cd == null) {
+                        const newValue = new userSchema.userCounterModel({ countername: "vehiclecounter", seq: 1 });
+                        newValue.save();
+                        seqId = 1;
+                    } else {
+                        seqId = cd.seq;
+                    }
+                    
+                    newVehicle = new pageSchema.vehicleModel ({
+                        vId:seqId,
+                        category:req.body.category,
+                        vehicleType:req.body.vehicleType,
+                        seats:req.body.seats,
+                        location:req.body.location,
+                        vehicleName:req.body.vehicleName,
+                        address:req.body.address,
+                        statuses:"0",
+                        statusComment:"vehicle added",
+                        createDate:utcTimestamp,
+                        updateDate:utcTimestamp
+                    })
+                        page.vehicles.push(newVehicle)
+                        page.save()
+                        newVehicle.save()
+                        res.send(`Your vehicle is added successfull! Please wait for admin approval`); // redirect to  page (/page)
+                         // res.send('This is !');
+                        
+                })
+                
+            }
+                
+    } catch (error) {
+        res.send(error)
+    }
+    }
+
+// find vehicle
+
+exports.getVehicle = async(req, res) =>{
+    try {
+        const jwtToken = req.cookies.jwt;
+        const userValid = await userVerify.userVerify(jwtToken);
+        if (!userValid.isPage == 1){
+            res.send("You don't have REON page! Go to '/myPage/create' for create new Page"); // redirect to create page for owner page (/mypage/create)
+            // res.redirect("/user/myPage/create");
+        }else{
+            const page = await pageSchema.pageModel.findOne({uId: userValid.uId})
+            .populate("vehicles")
+            res.json(page.vehicles)
+        }
+    } catch (error) {
+        
+    }
+}
+
+// update vehicle
+//delete vehicle
